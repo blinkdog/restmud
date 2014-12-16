@@ -10,6 +10,9 @@ Want to hack on restmud?
     npm install
     cake rebuild
 
+The application source code is located in `src/main/coffee`.
+The source code for the tests is located in `src/test/coffee`.
+
 ## License
 restmud<br/> 
 Copyright 2014 Patrick Meade
