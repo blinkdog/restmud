@@ -1,4 +1,4 @@
-# restmudTest.coffee
+# pingTest.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,21 +18,55 @@
 should = require 'should'
 request = require 'supertest'
 
-restmud = require '../lib/restmud'
+restmud = require '../../lib/restmud'
 
 app = restmud.create()
 
-describe 'restmud', ->
-  describe 'GET /', ->
-    it 'should return JSON', (done) ->
+describe '/ping', ->
+  describe 'HEAD /ping', ->
+    it 'should return 200', (done) ->
       request(app)
-        .get('/')
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
+        .head('/ping')
         .expect(200)
+        .end (err, res) ->
+          return done err if err
+          done()
+          
+  describe 'GET /ping', ->
+    it 'should return 405', (done) ->
+      request(app)
+        .get('/ping')
+        .expect(405)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+  describe 'POST /ping', ->
+    it 'should return 405', (done) ->
+      request(app)
+        .post('/ping')
+        .expect(405)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+  describe 'PUT /ping', ->
+    it 'should return 405', (done) ->
+      request(app)
+        .put('/ping')
+        .expect(405)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+  describe 'DELETE /ping', ->
+    it 'should return 405', (done) ->
+      request(app)
+        .delete('/ping')
+        .expect(405)
         .end (err, res) ->
           return done err if err
           done()
 
 #----------------------------------------------------------------------------
-# end of restmudTest.coffee
+# end of pingTest.coffee

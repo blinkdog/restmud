@@ -1,4 +1,4 @@
-# helloTest.coffee
+# ping.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,13 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-should = require 'should'
+exports.PATH = PATH = '/ping'
 
-hello = require '../lib/hello'
+exports.attach = (server) ->
 
-describe 'hello', ->
-  it 'should export a friendly message', ->
-    hello.message.should.equal "Hello"
+  server.head PATH, (req, res, next) ->
+    res.send 200
+    next()
+
+  return server
 
 #----------------------------------------------------------------------------
-# end of helloTest.coffee
+# end of ping.coffee

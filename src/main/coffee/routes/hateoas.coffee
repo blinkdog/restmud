@@ -1,4 +1,4 @@
-# hello.coffee
+# hateoas.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,7 +15,26 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-exports.message = "Hello"
+{baseUri} = require '../../config'
+ping = require './ping'
+
+exports.PATH = PATH = '/'
+
+HATEOAS =
+  links: [
+    { rel:'ping', href:"#{baseUri}#{ping.PATH}" },
+    { rel:'self', href:"#{baseUri}#{PATH}" } ]
+
+exports.attach = (server) ->
+  server.head PATH, (req, res, next) ->
+    res.send 200
+    next()
+
+  server.get PATH, (req, res, next) ->
+    res.send 200, HATEOAS
+    next()
+
+  return server
 
 #----------------------------------------------------------------------------
-# end of hello.coffee
+# end of hateoas.coffee

@@ -20,10 +20,11 @@ restify = require 'restify'
 exports.create = ->
   app = restify.createServer()
   
-  app.get '/', (req, res, next) ->
-    res.send 200, {}
-    next()
+  app.pre restify.pre.userAgentConnection()   # clean up curl requests
   
+  require('./routes/hateoas').attach app
+  require('./routes/ping').attach app
+
   return app
 
 #----------------------------------------------------------------------------
