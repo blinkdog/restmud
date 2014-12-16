@@ -1,0 +1,33 @@
+{
+    "name": "restmud",
+    "version": "0.0.1",
+    "description": "A MUD engine with a RESTful core",
+    "keywords": [
+        "coffeescript",
+        "game",
+        "moo",
+        "muck",
+        "mud",
+        "mux",
+        "rest",
+        "server",
+        "telnet"
+    ],
+    "homepage": "https://github.com/blinkdog/restmud",
+    "bugs": "https://github.com/blinkdog/restmud/issues",
+    "license": "AGPL-3.0",
+    "author": "Patrick Meade <veloxi@ticon.net>",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/blinkdog/restmud.git"
+    },
+    "dependencies": {
+        "underscore": "1.7.0"
+    },
+    "devDependencies": {
+        "coffee-script": "1.8.0",
+        "istanbul": "0.3.5",
+        "mocha": "2.0.1",
+        "should": "4.4.1"
+    }
+}

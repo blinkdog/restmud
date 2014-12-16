@@ -1,7 +1,16 @@
 # restmud
 A MUD engine with a RESTful core
 
-# License
+## Development Setup
+Want to hack on restmud?
+
+    git clone https://github.com/blinkdog/restmud
+    cd restmud
+    ./dev-setup
+    npm install
+    cake rebuild
+
+## License
 restmud<br/> 
 Copyright 2014 Patrick Meade
 
@@ -17,5 +26,3 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-
