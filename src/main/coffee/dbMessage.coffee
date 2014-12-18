@@ -1,4 +1,4 @@
-# restmud.coffee
+# dbMessage.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,21 +15,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-restify = require 'restify'
+_ = require 'underscore'
 
-exports.create = (options) ->
-  app = restify.createServer()
-  
-  app.pre restify.pre.userAgentConnection()   # clean up curl requests
-  app.use restify.bodyParser()                # parse JSON into req.body
-  
-  require('./routes/account').attach app
-  require('./routes/accounts').attach app
-  require('./routes/hateoas').attach app
-  require('./routes/ping').attach app
-  require('./routes/session').attach app
-
-  return app
+exports.parse = (err) ->
+  if not err?
+    return 'Unknown Error'
+  if err.name? and err.fields?
+    if err.name is 'SequelizeUniqueConstraintError'
+      if _.contains err.fields, 'username'
+        return 'username is already in use'
+  if err.name? and err.parent?.detail?
+    return "#{err.name}: #{err.parent.detail}"
+  if err.name?
+    return "#{err.name}"
+  return 'Database Error'
 
 #----------------------------------------------------------------------------
-# end of restmud.coffee
+# end of dbMessage.coffee

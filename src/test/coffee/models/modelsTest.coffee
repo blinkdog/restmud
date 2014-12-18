@@ -1,4 +1,4 @@
-# restmud.coffee
+# modelsTest.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,21 +15,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-restify = require 'restify'
+_ = require 'underscore'
+should = require 'should'
 
-exports.create = (options) ->
-  app = restify.createServer()
-  
-  app.pre restify.pre.userAgentConnection()   # clean up curl requests
-  app.use restify.bodyParser()                # parse JSON into req.body
-  
-  require('./routes/account').attach app
-  require('./routes/accounts').attach app
-  require('./routes/hateoas').attach app
-  require('./routes/ping').attach app
-  require('./routes/session').attach app
+models = require '../../lib/models/models'
 
-  return app
+describe 'Models', ->
+  nameList = []
+
+  sequelize =
+    define: (name, schema) ->
+      name.should.be.ok
+      schema.should.be.ok
+      nameList.push name
+
+  app =
+    models: null
+
+  models.define sequelize, app
+
+  describe 'Definitions', ->
+    it 'should have defined an Account model', ->
+      (_.contains nameList, 'Account').should.equal true
+
+  describe 'Application', ->
+    it 'should inject the models dependency object into application', ->
+      app.should.have.property 'models'
+      app.models.should.be.ok
+    it 'should have an Account model', ->
+      app.models.should.have.property 'Account'
+      app.models.Account.should.be.ok
 
 #----------------------------------------------------------------------------
-# end of restmud.coffee
+# end of modelsTest.coffee

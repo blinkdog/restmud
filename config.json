@@ -1,6 +1,17 @@
 {
     "baseUri": "http://localhost:8080",
+    "db": {
+        "dbname": "restmud",
+        "options": {
+            "dialect": "postgres",
+            "host": "localhost",
+            "port": "5432"
+        },
+        "password": "restmud",
+        "username": "restmud"
+    },
     "rest": {
         "port": 8080
-    }
+    },
+    "sourceUri": "https://github.com/blinkdog/restmud"
 }

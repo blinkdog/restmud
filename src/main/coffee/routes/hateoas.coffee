@@ -15,15 +15,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-{baseUri} = require '../../config'
+{baseUri, sourceUri} = require '../../config'
+accounts = require './accounts'
 ping = require './ping'
+session = require './session'
 
 exports.PATH = PATH = '/'
 
 HATEOAS =
   links: [
+    { rel:'accounts', href:"#{baseUri}#{accounts.PATH}" },
     { rel:'ping', href:"#{baseUri}#{ping.PATH}" },
-    { rel:'self', href:"#{baseUri}#{PATH}" } ]
+    { rel:'self', href:"#{baseUri}#{PATH}" },
+    { rel:'session', href:"#{baseUri}#{session.PATH}" },
+    { rel:'source', href:"#{sourceUri}" } ]
 
 exports.attach = (server) ->
   server.head PATH, (req, res, next) ->

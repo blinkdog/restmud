@@ -1,4 +1,4 @@
-# restmud.coffee
+# accountTest.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,21 +15,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-restify = require 'restify'
+should = require 'should'
+request = require 'supertest'
 
-exports.create = (options) ->
-  app = restify.createServer()
-  
-  app.pre restify.pre.userAgentConnection()   # clean up curl requests
-  app.use restify.bodyParser()                # parse JSON into req.body
-  
-  require('./routes/account').attach app
-  require('./routes/accounts').attach app
-  require('./routes/hateoas').attach app
-  require('./routes/ping').attach app
-  require('./routes/session').attach app
+restmud = require '../../lib/restmud'
 
-  return app
+app = restmud.create()
+
+describe '/account', ->
+  describe 'GET /account', ->
+    it 'should return 404 Not Found', (done) ->
+      request(app)
+        .get('/account')
+        .expect(404)
+        .end (err, res) ->
+          return done err if err
+          done()
 
 #----------------------------------------------------------------------------
-# end of restmud.coffee
+# end of accountTest.coffee

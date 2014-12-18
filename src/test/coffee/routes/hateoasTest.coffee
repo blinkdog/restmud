@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
+_ = require 'underscore'
 should = require 'should'
 request = require 'supertest'
 
@@ -68,6 +69,66 @@ describe 'HATEOAS /', ->
               href: (it) -> it.should.be.ok
           return done err if err
           done()
+          
+    describe 'HATEOAS links', ->
+      hasLinkType = (links, type) ->
+        link = _.findWhere links, { rel: type }
+        should(link).be.ok
+
+      it 'should provide an accounts link relation', (done) ->
+        request(app)
+          .get('/')
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end (err, res) ->
+            hasLinkType res.body.links, 'accounts'
+            return done err if err
+            done()
+
+      it 'should provide a ping link relation', (done) ->
+        request(app)
+          .get('/')
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end (err, res) ->
+            hasLinkType res.body.links, 'ping'
+            return done err if err
+            done()
+
+      it 'should provide a self link relation', (done) ->
+        request(app)
+          .get('/')
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end (err, res) ->
+            hasLinkType res.body.links, 'self'
+            return done err if err
+            done()
+
+      it 'should provide a session link relation', (done) ->
+        request(app)
+          .get('/')
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end (err, res) ->
+            hasLinkType res.body.links, 'session'
+            return done err if err
+            done()
+
+      it 'should provide a source link relation', (done) ->
+        request(app)
+          .get('/')
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end (err, res) ->
+            hasLinkType res.body.links, 'source'
+            return done err if err
+            done()
 
 #----------------------------------------------------------------------------
 # end of hateoasTest.coffee

@@ -1,4 +1,4 @@
-# restmud.coffee
+# models.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,21 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-restify = require 'restify'
+modelNames = [ "Account" ]
 
-exports.create = (options) ->
-  app = restify.createServer()
-  
-  app.pre restify.pre.userAgentConnection()   # clean up curl requests
-  app.use restify.bodyParser()                # parse JSON into req.body
-  
-  require('./routes/account').attach app
-  require('./routes/accounts').attach app
-  require('./routes/hateoas').attach app
-  require('./routes/ping').attach app
-  require('./routes/session').attach app
-
+exports.define = (sequelize, app) ->
+  models = {}
+  for name in modelNames
+    model = require("./#{name}")
+    models[model.NAME] = sequelize.define model.NAME, model.SCHEMA
+  app.models = models
   return app
 
 #----------------------------------------------------------------------------
-# end of restmud.coffee
+# end of models.coffee

@@ -1,3 +1,5 @@
 # TODO
-[X] Provide HATEOAS links in JSON format on GET /
+[X] Allow Crud for accounts
+[ ] Allow cRud of account
+[ ] Update password storage scheme to use bath-salted hashes
 [ ] Allow authentication to provide session tokens

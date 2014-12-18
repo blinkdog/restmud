@@ -1,6 +1,6 @@
 {
     "name": "restmud",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "A MUD engine with a RESTful core",
     "keywords": [
         "coffeescript",
@@ -22,7 +22,9 @@
         "url": "https://github.com/blinkdog/restmud.git"
     },
     "dependencies": {
+        "pg": "4.1.1",
         "restify": "2.8.4",
+        "sequelize": "2.0.0-rc3",
         "underscore": "1.7.0"
     },
     "devDependencies": {

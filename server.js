@@ -15,9 +15,27 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //---------------------------------------------------------------------------
 
+// load configuration
 var config = require('./config');
+
+// load and configure the ORM connection
+var Sequelize = require('sequelize');
+var sequelize = new Sequelize(
+        config.db.dbname,
+        config.db.username,
+        config.db.password,
+        config.db.options);
+
+// load and configure the restmud application
 var restmud = require('./lib/restmud');
 var server = restmud.create();
+
+// define ORM models for the application
+var models = require('./lib/models/models');
+models.define(sequelize, server);
+sequelize.sync();
+
+// begin listening for connections
 server.listen(config.rest.port);
 
 //---------------------------------------------------------------------------
