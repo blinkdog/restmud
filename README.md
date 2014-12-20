@@ -1,6 +1,9 @@
 # restmud
 A MUD engine with a RESTful core
 
+## Dependencies
+* [Node.js](http://nodejs.org/)
+
 ## Development Setup
 Want to hack on restmud?
 
@@ -9,9 +12,6 @@ Want to hack on restmud?
     ./dev-setup
     npm install
     cake rebuild
-
-The application source code is located in `src/main/coffee`.
-The source code for the tests is located in `src/test/coffee`.
 
 ## License
 restmud<br/> 

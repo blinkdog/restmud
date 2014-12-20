@@ -24,7 +24,6 @@ exports.create = (options) ->
   app.use restify.bodyParser()                # parse JSON into req.body
   
   require('./routes/account').attach app
-  require('./routes/accounts').attach app
   require('./routes/hateoas').attach app
   require('./routes/ping').attach app
   require('./routes/session').attach app

@@ -24,17 +24,14 @@ Obtain HATEOAS links for the application:
 Not exactly sure why I implemented this one. It's there if you want it.
 
 ## Relation: account
-CRUD operation on an account. Not implemented yet.
-
-## Relation: accounts
-CRUD operations on all accounts. Well, C for now; RUD later (after
+CRUD operations on accounts. Well, C for now; RUD later (after
 authentication is implemented).
 
-### GET accounts
+### GET account
 This provides a list of all the accounts on the system. For security reasons,
 this is restricted to those who have authenticated with the administrator role.
 
-### POST accounts
+### POST account
 Create a new account on the system. JSON of the following form should be
 provided in the POST body:
 

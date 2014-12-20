@@ -16,7 +16,7 @@
 #----------------------------------------------------------------------------
 
 {baseUri, sourceUri} = require '../../config'
-accounts = require './accounts'
+account = require './account'
 ping = require './ping'
 session = require './session'
 
@@ -24,7 +24,7 @@ exports.PATH = PATH = '/'
 
 HATEOAS =
   links: [
-    { rel:'accounts', href:"#{baseUri}#{accounts.PATH}" },
+    { rel:'account', href:"#{baseUri}#{account.PATH}" },
     { rel:'ping', href:"#{baseUri}#{ping.PATH}" },
     { rel:'self', href:"#{baseUri}#{PATH}" },
     { rel:'session', href:"#{baseUri}#{session.PATH}" },

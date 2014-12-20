@@ -35,6 +35,9 @@ task 'coverage', 'Perform test coverage analysis', ->
 task 'rebuild', 'Rebuild the module', ->
   clean -> compile -> test()
 
+task 'test-db', 'Test against the database', ->
+  clean -> compile -> testDb()
+
 #----------------------------------------------------------------------------
 
 clean = (callback) ->
@@ -60,6 +63,13 @@ test = (callback) ->
   exec 'node_modules/.bin/mocha --recursive', (err, stdout, stderr) ->
     console.log stdout + stderr
     callback?() if stderr.indexOf("AssertionError") < 0
+
+testDb = (callback) ->
+  exec "node_modules/.bin/coffee -o test/ -c src/test-db/coffee", (err, stdout, stderr) ->
+    throw err if err
+    exec 'node_modules/.bin/mocha --recursive', (err, stdout, stderr) ->
+      console.log stdout + stderr
+      callback?() if stderr.indexOf("AssertionError") < 0
 
 #----------------------------------------------------------------------------
 

@@ -10,6 +10,11 @@
         "password": "restmud",
         "username": "restmud"
     },
+    "pbkdf2": {
+        "iterations": 64,
+        "keyLength": 8,
+        "saltLength": 8
+    },
     "rest": {
         "port": 8080
     },

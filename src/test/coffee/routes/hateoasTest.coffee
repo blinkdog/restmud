@@ -23,7 +23,7 @@ restmud = require '../../lib/restmud'
 
 app = restmud.create()
 
-describe 'HATEOAS /', ->
+describe '/ (HATEOAS)', ->
   describe 'HEAD /', ->
     it 'should return 200', (done) ->
       request(app)
@@ -75,14 +75,14 @@ describe 'HATEOAS /', ->
         link = _.findWhere links, { rel: type }
         should(link).be.ok
 
-      it 'should provide an accounts link relation', (done) ->
+      it 'should provide an account link relation', (done) ->
         request(app)
           .get('/')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
           .end (err, res) ->
-            hasLinkType res.body.links, 'accounts'
+            hasLinkType res.body.links, 'account'
             return done err if err
             done()
 

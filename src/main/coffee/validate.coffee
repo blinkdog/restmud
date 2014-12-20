@@ -1,4 +1,4 @@
-# Account.coffee
+# validate.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,44 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-Sequelize = require 'sequelize'
-
-{BASE64} = require '../validate'
-
-exports.NAME = 'Account'
-
-exports.SCHEMA = 
-  id:
-    type: Sequelize.INTEGER
-    autoIncrement: true
-    primaryKey: true
-  username:
-    type: Sequelize.STRING
-    allowNull: false
-    unique: true
-    validate:
-      is: /^[a-z]+$/i
-      len: [3,16]
-  hashBase64:
-    type: Sequelize.STRING
-    allowNull: false
-    validate:
-      is: BASE64
-  iterations:
-    type: Sequelize.INTEGER
-    allowNull: false
-    validate:
-      min: 1
-  keyLength:
-    type: Sequelize.INTEGER
-    allowNull: false
-    validate:
-      min: 1
-  saltBase64:
-    type: Sequelize.STRING
-    allowNull: false
-    validate:
-      is: BASE64
+exports.BASE64 = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
 
 #----------------------------------------------------------------------------
-# end of Account.coffee
+# end of validate.coffee

@@ -30,6 +30,18 @@ The password which is used to authenticate against the database.
 ### username
 The username which is used to authenticate against the database.
 
+## pbkdf2
+Options related to password storage via [PBKDF2](http://en.wikipedia.org/wiki/PBKDF2)
+
+### iterations
+Number of iterations to use when deriving the key
+
+### keyLength
+Length of the key to be derived
+
+### saltLength
+Length of the salt to be generated
+
 ## rest
 Configuration for the REST(HTTP) protocol services provided by the server.
 
