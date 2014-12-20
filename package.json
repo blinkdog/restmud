@@ -1,6 +1,6 @@
 {
     "name": "restmud",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "A MUD engine with a RESTful core",
     "keywords": [
         "coffeescript",

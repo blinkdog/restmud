@@ -28,6 +28,9 @@ describe 'Models', ->
       name.should.be.ok
       schema.should.be.ok
       nameList.push name
+      model =
+        belongsTo: ->
+        hasMany: ->
 
   app =
     models: null
@@ -37,6 +40,8 @@ describe 'Models', ->
   describe 'Definitions', ->
     it 'should have defined an Account model', ->
       (_.contains nameList, 'Account').should.equal true
+    it 'should have defined a Session model', ->
+      (_.contains nameList, 'Session').should.equal true
 
   describe 'Application', ->
     it 'should inject the models dependency object into application', ->
@@ -45,6 +50,9 @@ describe 'Models', ->
     it 'should have an Account model', ->
       app.models.should.have.property 'Account'
       app.models.Account.should.be.ok
+    it 'should have a Session model', ->
+      app.models.should.have.property 'Session'
+      app.models.Session.should.be.ok
 
 #----------------------------------------------------------------------------
 # end of modelsTest.coffee

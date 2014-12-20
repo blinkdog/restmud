@@ -1,6 +1,8 @@
 # TODO
-[X] Refactor database-dependent tests to their own cake task
-[X] Refactor /accounts to /account; combine account and accounts relation
-[X] Update password storage scheme to something secure
-[ ] Allow authentication to provide session tokens
+[X] Allow authentication to provide session tokens
+[ ] Allow Session headers to also provide req.auth
 [ ] Allow cRud of account
+
+## Wish List
+[ ] Clean up the session object provided in the POST /session response
+[ ] Write unit tests for SessionTestDB for the test-db suite

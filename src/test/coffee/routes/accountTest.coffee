@@ -35,31 +35,6 @@ describe '/account', ->
           done()
 
   describe 'POST /account', ->
-#    stubAccountModel =
-#      create: (json) ->
-#        @ok = true
-#        if not _.has json, [ 'username', 'password', 'hashBase64', 'iterations', 'keyLength', 'saltBase64' ]
-#          @err = "Missing Parameter"
-#          @ok = false
-#        if not /^[a-z]+$/i.test json.username
-#          @err = "Invalid username"
-#          @ok = false
-#        if not BASE64.test json.hashBase64
-#          @err = "Invalid hashBase64"
-#          @ok = false
-#        if not BASE64.test json.saltBase64
-#          @err = "Invalid saltBase64"
-#          @ok = false
-#        @account = json
-#        return this
-#      then: (cb) -> cb?(@account) if @ok
-#      catch: (cb) -> cb?(@err) if not @ok
-#  
-#    beforeEach (done) ->
-#      app.models =
-#        Account: stubAccountModel
-#      done()
-
     it 'should return 400 Bad Request if no body is present', (done) ->
       request(app)
         .post('/account')

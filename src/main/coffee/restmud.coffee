@@ -17,12 +17,17 @@
 
 restify = require 'restify'
 
+middle = require './middle'
+
 exports.create = (options) ->
   app = restify.createServer()
   
   app.pre restify.pre.userAgentConnection()   # clean up curl requests
+  app.use restify.authorizationParser()       # parse an Authorization header
   app.use restify.bodyParser()                # parse JSON into req.body
-  
+
+  app.use middle.requestAuth app              # load req.auth when valid creds
+
   require('./routes/account').attach app
   require('./routes/hateoas').attach app
   require('./routes/ping').attach app

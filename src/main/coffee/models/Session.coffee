@@ -1,4 +1,4 @@
-# session.coffee
+# Account.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,29 +15,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-config = require '../../config'
-middle = require '../middle'
+Sequelize = require 'sequelize'
 
-exports.PATH = PATH = '/session'
+{BASE64} = require '../validate'
 
-exports.attach = (server) ->
-  authorizationRequired = middle.authorizationRequired()
+exports.NAME = 'Session'
 
-  server.post PATH, authorizationRequired, (req, res, next) ->
-    if not req.auth?
-      res.send 401
-      return next()
-    {Session} = server.models
-    Session.create
-      expiresAt: Date.now() + config.sessionLength
-      AccountId: req.auth.id
-    .then (session) ->
-      res.send 201, session
-      next()
-    .catch (err) ->
-      next new restify.InternalServerError err
-
-  return server
+exports.SCHEMA = 
+  id:
+    type: Sequelize.BIGINT
+    autoIncrement: true
+    primaryKey: true
+  uuid:
+    type: Sequelize.UUID
+    allowNull: false
+    defaultValue: Sequelize.UUIDV4
+    validate:
+      isUUID: 4
+  expiresAt:
+    type: Sequelize.DATE
+    allowNull: false
+    validate:
+      isDate: true
 
 #----------------------------------------------------------------------------
-# end of session.coffee
+# end of Session.coffee

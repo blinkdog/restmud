@@ -48,6 +48,12 @@ Configuration for the REST(HTTP) protocol services provided by the server.
 ### port
 The port on which the server will listen for RESTful requests.
 
+## sessionLength
+Length of a session before it expires, in units of milliseconds. A value
+of 300000 is 5 minutes.
+
+    "sessionLength": 300000,
+
 ## sourceUri
 The URI used to provide the Corresponding Source as required by Section 13
 of the GNU Affero General Public License. This URI may provide the

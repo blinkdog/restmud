@@ -18,5 +18,6 @@
     "rest": {
         "port": 8080
     },
+    "sessionLength": 300000,
     "sourceUri": "https://github.com/blinkdog/restmud"
 }

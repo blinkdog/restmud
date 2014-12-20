@@ -1,4 +1,4 @@
-# session.coffee
+# SessionTest.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,29 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-config = require '../../config'
-middle = require '../middle'
+should = require 'should'
 
-exports.PATH = PATH = '/session'
+model = require '../../lib/models/Session'
 
-exports.attach = (server) ->
-  authorizationRequired = middle.authorizationRequired()
-
-  server.post PATH, authorizationRequired, (req, res, next) ->
-    if not req.auth?
-      res.send 401
-      return next()
-    {Session} = server.models
-    Session.create
-      expiresAt: Date.now() + config.sessionLength
-      AccountId: req.auth.id
-    .then (session) ->
-      res.send 201, session
-      next()
-    .catch (err) ->
-      next new restify.InternalServerError err
-
-  return server
+describe 'Model: Session', ->
+  it 'should be named Session', ->
+    model.NAME.should.equal 'Session'
+  it 'should have a defined schema', ->
+    model.SCHEMA.should.be.ok
 
 #----------------------------------------------------------------------------
-# end of session.coffee
+# end of SessionTest.coffee

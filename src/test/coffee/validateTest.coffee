@@ -39,7 +39,6 @@ describe 'validate', ->
           return done err if err?
           base64 = bytes.toString 'base64'
           return maybeDone() if validate.BASE64.test base64
-          console.log 'validateTest.coffee:36 - %s', base64
           should(false).equal true
 
     it 'should invalidate bad base64 strings', ->

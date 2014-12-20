@@ -15,13 +15,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-modelNames = [ "Account" ]
+modelNames = [ "Account", "Session" ]
 
 exports.define = (sequelize, app) ->
+  # load and define all the models
   models = {}
   for name in modelNames
     model = require("./#{name}")
     models[model.NAME] = sequelize.define model.NAME, model.SCHEMA
+  # define the relations between models
+  models.Account.hasMany models.Session
+  models.Session.belongsTo models.Account
+  # return our app with ORM models
   app.models = models
   return app
 

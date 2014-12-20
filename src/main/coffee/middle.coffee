@@ -1,4 +1,4 @@
-# session.coffee
+# middle.coffee
 # Copyright 2014 Patrick Meade.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,29 +15,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-config = require '../../config'
-middle = require '../middle'
+{verifySync} = require './auth'
 
-exports.PATH = PATH = '/session'
-
-exports.attach = (server) ->
-  authorizationRequired = middle.authorizationRequired()
-
-  server.post PATH, authorizationRequired, (req, res, next) ->
-    if not req.auth?
+exports.authorizationRequired = ->
+  return (req, res, next) ->
+    if not req.authorization.basic?
       res.send 401
-      return next()
-    {Session} = server.models
-    Session.create
-      expiresAt: Date.now() + config.sessionLength
-      AccountId: req.auth.id
-    .then (session) ->
-      res.send 201, session
+      return next false
+    next()
+
+exports.requestAuth = (app) ->
+  return (req, res, next) ->
+    return next() if not req.authorization.basic?
+    findUsername =
+      where:
+        username: req.authorization.basic.username
+    {Account} = app.models
+    Account.find(findUsername)
+    .then (account) ->
+      return next() if not account?
+      verifyCred =
+        hashBase64: account.hashBase64
+        iterations: account.iterations
+        keyLength: account.keyLength
+        password: req.authorization.basic.password
+        saltBase64: account.saltBase64
+      if verifySync verifyCred
+        req.auth = account
       next()
     .catch (err) ->
-      next new restify.InternalServerError err
-
-  return server
+      return next()
 
 #----------------------------------------------------------------------------
-# end of session.coffee
+# end of middle.coffee

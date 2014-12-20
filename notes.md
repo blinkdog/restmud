@@ -9,6 +9,12 @@ Here's an example of creating an account using curl:
     -d '{"username": "Mario", "password": "ilovepeach"}' \
     http://localhost:8080/accounts && echo ""
 
+Here's an example of creating a session using curl:
+
+    curl -i -H "Authorization: Basic TWFyaW86aWxvdmVwZWFjaA==" \
+    -X POST \
+    http://localhost:8080/session && echo ""
+
 ## On the use of `dd`
 Here's an example of using dd to generate base64 strings:
 
