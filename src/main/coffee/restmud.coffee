@@ -27,6 +27,7 @@ exports.create = (options) ->
   app.use restify.bodyParser()                # parse JSON into req.body
 
   app.use middle.requestAuth app              # load req.auth when valid creds
+  app.use middle.sessionAuth app              # load req.auth when valid Session
 
   require('./routes/account').attach app
   require('./routes/hateoas').attach app

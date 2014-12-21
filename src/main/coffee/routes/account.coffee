@@ -69,7 +69,14 @@ exports.attach = (server) ->
         next new restify.ConflictError dbMessage.parse err
 
   server.get "#{PATH}/:id", (req, res, next) ->
-    next new restify.UnauthorizedError "Authentication required to view account"
+    ERROR_MESSAGE = "Authentication required to view account"
+    if not req.auth?
+      return next new restify.UnauthorizedError ERROR_MESSAGE
+    if req.auth.id isnt parseInt req.params.id
+      return next new restify.ForbiddenError ERROR_MESSAGE
+    sendAcct = _.pick req.auth, [ 'id', 'username' ]
+    res.send 200, sendAcct
+    next()
 
   return server
 

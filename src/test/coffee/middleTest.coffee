@@ -165,5 +165,107 @@ describe 'middle', ->
         true.should.equal false
       requestAuth req, res, next
 
+  describe 'sessionAuth', ->
+    it 'should pass along when req.headers.session does not exist', (done) ->
+      app = {}
+      sessionAuth = middle.sessionAuth app
+      req =
+        headers: {}
+      res = {}
+      next = (err) ->
+        return done() if not req.auth?
+        true.should.equal false
+      sessionAuth req, res, next
+
+    it 'should pass along when req.headers.session is not a UUID', (done) ->
+      app = {}
+      sessionAuth = middle.sessionAuth app
+      req =
+        headers:
+          session: "h2YgZX9Thm0"
+      res = {}
+      next = (err) ->
+        return done() if not req.auth?
+        true.should.equal false
+      sessionAuth req, res, next
+
+    it 'should pass along when Session contains an unknown or expired session', (done) ->
+      app =
+        models:
+          Session:
+            find: (where) ->
+              return this
+            then: (cb) ->
+              cb?(null)
+              return this
+            catch: (cb) ->
+              return this
+      sessionAuth = middle.sessionAuth app
+      req =
+        headers:
+          session: "e21aaa94-aea9-4d9f-b36b-45a2736ace64"
+      res = {}
+      next = (err) ->
+        return done() if not req.auth?
+        true.should.equal false
+      sessionAuth req, res, next
+
+    it 'should not annotate req.auth when the database throws', (done) ->
+      app =
+        models:
+          Session:
+            find: (where) ->
+              return this
+            then: (cb) ->
+              return this
+            catch: (cb) ->
+              cb?("Exterminate! Exterminate!")
+              return this
+      sessionAuth = middle.sessionAuth app
+      req =
+        headers:
+          session: "06ade853-d8d3-466c-98e1-420a24020a73"
+      res = {}
+      next = (err) ->
+        return done() if not req.auth?
+        true.should.equal false
+      sessionAuth req, res, next
+
+    it 'should load req.auth when Session references a valid session', (done) ->
+      mario =
+        id: 1
+        username: "Mario"
+        hashBase64: "yGBOPbBX+J8="
+        iterations: 64
+        keyLength: 8
+        saltBase64: "JI3XbdNVKDw="
+      session =
+        id: 16
+        uuid: "06ade853-d8d3-466c-98e1-420a24020a73"
+        expiresAt: "2014-12-20T20:58:16.615Z"
+        AccountId: 1
+        updatedAt: "2014-12-20T20:53:16.616Z"
+        createdAt: "2014-12-20T20:53:16.616Z"
+        getAccount: -> mario
+      app =
+        models:
+          Session:
+            find: (where) ->
+              return this
+            then: (cb) ->
+              cb?(session)
+              return this
+            catch: (cb) ->
+              return this
+      sessionAuth = middle.sessionAuth app
+      req =
+        headers:
+          session: "06ade853-d8d3-466c-98e1-420a24020a73"
+      res = {}
+      next = (err) ->
+        req.auth.should.equal mario
+        return done() 
+      sessionAuth req, res, next
+
 #----------------------------------------------------------------------------
 # end of middleTest.coffee

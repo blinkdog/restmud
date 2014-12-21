@@ -15,7 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
+Sequelize = require 'sequelize'
+
 {verifySync} = require './auth'
+{UUIDV4} = require './validate'
 
 exports.authorizationRequired = ->
   return (req, res, next) ->
@@ -42,6 +45,24 @@ exports.requestAuth = (app) ->
         saltBase64: account.saltBase64
       if verifySync verifyCred
         req.auth = account
+      next()
+    .catch (err) ->
+      return next()
+
+exports.sessionAuth = (app) ->
+  return (req, res, next) ->
+    return next() if not req.headers.session?
+    return next() if not UUIDV4.test req.headers.session
+    findByUuid =
+      where:
+        uuid: req.headers.session
+        expiresAt:
+          gt: Sequelize.NOW            # non-expired sessions only
+    {Session} = app.models
+    Session.find(findByUuid)
+    .then (session) ->
+      return next() if not session?
+      req.auth = session.getAccount()
       next()
     .catch (err) ->
       return next()

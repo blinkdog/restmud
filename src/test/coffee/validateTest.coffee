@@ -47,5 +47,50 @@ describe 'validate', ->
       validate.BASE64.test('xx9cxf3Hxcdxc9xc9xd7Q(xcf/xcaIQx04x00 ^x04x8a').should.equal false
       validate.BASE64.test('48656c6c6f2c20776f726c6421').should.equal false
 
+  describe 'UUIDV4', ->
+    it 'should be a regular expression', ->
+      validate.should.have.property 'UUIDV4'
+      validate.UUIDV4.should.be.ok
+      validate.UUIDV4.constructor.name.should.equal 'RegExp'
+      should(validate.UUIDV4 instanceof RegExp).equal true
+
+    it 'should validate legitimate UUID v4 strings', ->
+      {UUIDV4} = validate
+      UUIDV4.test("58cac0ff-db9b-42e9-8119-2a9782334beb").should.equal true
+      UUIDV4.test("5d5d462a-8fc7-4f90-9a7e-75900b14c095").should.equal true
+      UUIDV4.test("706afbc5-8724-40be-a462-e573b260b6e3").should.equal true
+      UUIDV4.test("1a441627-a85b-4615-b4ad-567490cbecaf").should.equal true
+
+    it 'should invalidate bogus UUID v4 strings', ->
+      {UUIDV4} = validate
+      UUIDV4.test("58cac0ff-db9b-42e9-1119-2a9782334beb").should.equal false
+      UUIDV4.test("5d5d462a-8fc7-4f90-2a7e-75900b14c095").should.equal false
+      UUIDV4.test("706afbc5-8724-40be-3462-e573b260b6e3").should.equal false
+      UUIDV4.test("1a441627-a85b-4615-44ad-567490cbecaf").should.equal false
+      UUIDV4.test("58cac0ff-db9b-42e9-5119-2a9782334beb").should.equal false
+      UUIDV4.test("5d5d462a-8fc7-4f90-6a7e-75900b14c095").should.equal false
+      UUIDV4.test("706afbc5-8724-40be-7462-e573b260b6e3").should.equal false
+      UUIDV4.test("1a441627-a85b-4615-c4ad-567490cbecaf").should.equal false
+      UUIDV4.test("1a441627-a85b-4615-d4ad-567490cbecaf").should.equal false
+      UUIDV4.test("1a441627-a85b-4615-e4ad-567490cbecaf").should.equal false
+      UUIDV4.test("1a441627-a85b-4615-f4ad-567490cbecaf").should.equal false
+
+    it 'should invalidate non-v4 UUID strings', ->
+      {UUIDV4} = validate
+      UUIDV4.test("706afbc5-8724-10be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-20be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-30be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-50be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-60be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-70be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-80be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-90be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-a0be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-b0be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-c0be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-d0be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-e0be-a462-e573b260b6e3").should.equal false
+      UUIDV4.test("706afbc5-8724-f0be-a462-e573b260b6e3").should.equal false
+
 #----------------------------------------------------------------------------
 # end of validateTest.coffee
