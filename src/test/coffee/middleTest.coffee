@@ -267,5 +267,54 @@ describe 'middle', ->
         return done() 
       sessionAuth req, res, next
 
+  describe 'forbidBanned', ->
+    forbidBanned = middle.forbidBanned()
+
+    it 'should pass along when req.auth does not exist', (done) ->
+      req = {}
+      res = {}
+      next = (err) ->
+        return done() if not err?
+        true.should.equal false
+      forbidBanned req, res, next
+
+    it 'should pass along when req.auth is not banned', (done) ->
+      req =
+        auth:
+          id: 1
+          username: "Mario"
+          hashBase64: "yGBOPbBX+J8="
+          iterations: 64
+          keyLength: 8
+          saltBase64: "JI3XbdNVKDw="
+          email: "mario@mushroom.gov"
+          banned: false
+      res = {}
+      next = (err) ->
+        return done() if not err?
+        true.should.equal false
+      forbidBanned req, res, next
+
+    it 'should send 403 Forbidden to requests from banned accounts', (done) ->
+      statusCode = null
+      req =
+        auth:
+          id: 616
+          username: "Bowser"
+          hashBase64: "RiPubxaMp/w="
+          iterations: 64
+          keyLength: 8
+          saltBase64: "akpWIrny8ZY="
+          email: "bowser@dungeon.com"
+          banned: true
+      res =
+        send: (status, message) ->
+          statusCode = status
+          message.should.equal 'Banned'
+      next = (err) ->
+        err.should.equal false
+        return done()
+      forbidBanned req, res, next
+
 #----------------------------------------------------------------------------
 # end of middleTest.coffee

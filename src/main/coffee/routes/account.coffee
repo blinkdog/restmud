@@ -25,6 +25,12 @@ dbMessage = require '../dbMessage'
 
 exports.PATH = PATH = '/account'
 
+displayAccount = (account) ->
+  acct = _.pick account, [ 'id', 'username', 'email' ]
+  acct.links = [
+    { rel:'self', href:"#{baseUri}#{PATH}/#{acct.id}" } ]
+  return acct
+
 exports.attach = (server) ->
 
   server.get PATH, (req, res, next) ->
@@ -74,9 +80,47 @@ exports.attach = (server) ->
       return next new restify.UnauthorizedError ERROR_MESSAGE
     if req.auth.id isnt parseInt req.params.id
       return next new restify.ForbiddenError ERROR_MESSAGE
-    sendAcct = _.pick req.auth, [ 'id', 'username' ]
-    res.send 200, sendAcct
+    res.send 200, displayAccount req.auth
     next()
+
+  server.put "#{PATH}/:id", (req, res, next) ->
+    # check authentication
+    ERROR_MESSAGE = "Authentication required to update account"
+    if not req.auth?
+      return next new restify.UnauthorizedError ERROR_MESSAGE
+    if req.auth.id isnt parseInt req.params.id
+      return next new restify.ForbiddenError ERROR_MESSAGE
+    # determine what fields need to be updated
+    newAcct = _.pick req.body, [ 'email', 'password' ]
+    # if the user updated their password
+    if newAcct.password?
+      _.defaults newAcct, auth.generateSync
+        iterations: pbkdf2.iterations
+        keyLength: pbkdf2.keyLength
+        password: newAcct.password
+        saltLength: pbkdf2.saltLength
+    # ask the database to update the account object
+    req.auth.updateAttributes(newAcct)
+    .then ->
+      res.send 200, displayAccount req.auth
+      next()
+    .catch (err) ->
+      next new restify.ConflictError dbMessage.parse err
+
+  server.del "#{PATH}/:id", (req, res, next) ->
+    # check authentication
+    ERROR_MESSAGE = "Authentication required to delete account"
+    if not req.auth?
+      return next new restify.UnauthorizedError ERROR_MESSAGE
+    if req.auth.id isnt parseInt req.params.id
+      return next new restify.ForbiddenError ERROR_MESSAGE
+    # delete the account
+    req.auth.destroy()
+    .then ->
+      res.send 200
+      next()
+    .catch (err) ->
+      next new restify.ConflictError dbMessage.parse err
 
   return server
 

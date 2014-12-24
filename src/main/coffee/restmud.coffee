@@ -28,6 +28,7 @@ exports.create = (options) ->
 
   app.use middle.requestAuth app              # load req.auth when valid creds
   app.use middle.sessionAuth app              # load req.auth when valid Session
+  app.use middle.forbidBanned()               # 403 requests from banned accts
 
   require('./routes/account').attach app
   require('./routes/hateoas').attach app

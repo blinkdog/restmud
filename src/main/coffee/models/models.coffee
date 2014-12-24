@@ -17,12 +17,15 @@
 
 modelNames = [ "Account", "Session" ]
 
+options =
+  paranoid: true                       # use deletedAt instead of deleting rows
+
 exports.define = (sequelize, app) ->
   # load and define all the models
   models = {}
   for name in modelNames
     model = require("./#{name}")
-    models[model.NAME] = sequelize.define model.NAME, model.SCHEMA
+    models[model.NAME] = sequelize.define model.NAME, model.SCHEMA, options
   # define the relations between models
   models.Account.hasMany models.Session
   models.Session.belongsTo models.Account

@@ -53,6 +53,14 @@ exports.SCHEMA =
     allowNull: false
     validate:
       is: BASE64
+  email:
+    type: Sequelize.STRING
+    validate:
+      isEmail: true
+  banned:
+    type: Sequelize.BOOLEAN
+    allowNull: false
+    defaultValue: false
 
 #----------------------------------------------------------------------------
 # end of Account.coffee

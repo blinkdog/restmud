@@ -75,11 +75,51 @@ the newly created account resource:
       "href": "http://restmud.example.com/account/42"
     }
 
+### GET account/:id
+Obtain the data for an account resource. Proper authorization is required to
+view the data of the account (i.e.: a valid session for that account)
+
+    GET /account/1
+
+Might return 200 OK:
+
+    {
+      "id": 1,
+      "username": "Mario"
+    }
+
+### PUT account/:id
+Update the data in the account resource. Proper authorization is required to
+update the data of the account (i.e.: a valid session for that account)
+
+The new information should be supplied as an object in JSON format in the
+body of the request. The fields that can be updated are:
+
+    {
+      "email": "valid.email.address@example.com",
+      "password": "fireflowersforpeach"
+    }
+
+### DELETE account/:id
+Delete the account resource. Proper authorization is required to
+delete the account (i.e.: a valid session for that account)
+
+Will return 200 OK upon a successful DELETE. Further requests will
+be bounced with a 401 Unauthorized.
+
+Accounts that have been banned will 403 Forbidden, even on a DELETE
+request. This is to prevent someone from deleting and then recreating
+their account in order to evade the ban.
+
 ## Relation: ping
 Ping the service, to see if it is responding to requests.
 
 ### HEAD ping
 HEAD is the only supported method, because there is no body text.
+
+## Relation: status
+Will be used to provide status information about the server.
+Not implemented yet.
 
 ## Relation: session
 Used to authenticate and establish client sessions.

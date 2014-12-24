@@ -67,5 +67,13 @@ exports.sessionAuth = (app) ->
     .catch (err) ->
       return next()
 
+exports.forbidBanned = ->
+  return (req, res, next) ->
+    return next() if not req.auth?
+    if req.auth.banned
+      res.send 403, "Banned"
+      return next false
+    next()
+
 #----------------------------------------------------------------------------
 # end of middle.coffee

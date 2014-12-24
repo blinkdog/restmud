@@ -1,6 +1,6 @@
 {
     "name": "restmud",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "A MUD engine with a RESTful core",
     "keywords": [
         "coffeescript",
@@ -24,13 +24,13 @@
     "dependencies": {
         "pg": "4.1.1",
         "restify": "2.8.4",
-        "sequelize": "2.0.0-rc3",
+        "sequelize": "2.0.0-rc4",
         "underscore": "1.7.0"
     },
     "devDependencies": {
         "coffee-script": "1.8.0",
         "istanbul": "0.3.5",
-        "mocha": "2.0.1",
+        "mocha": "2.1.0",
         "should": "4.4.1",
         "supertest": "0.15.0"
     }

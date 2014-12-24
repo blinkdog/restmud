@@ -34,6 +34,16 @@ exports.generate = (options, callback) ->
   catch err
     callback err
 
+exports.generateSync = (options) ->
+  { iterations, keyLength, password, saltLength } = options
+  saltBuffer = crypto.pseudoRandomBytes saltLength
+  key = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength
+  return credentials =
+    hashBase64: key.toString 'base64'
+    iterations: iterations
+    keyLength: keyLength
+    saltBase64: saltBuffer.toString 'base64'
+
 exports.verifySync = (options) ->
   { hashBase64, iterations, keyLength, password, saltBase64 } = options
   saltBuffer = new Buffer saltBase64, 'base64'
