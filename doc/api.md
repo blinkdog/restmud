@@ -111,6 +111,19 @@ Accounts that have been banned will 403 Forbidden, even on a DELETE
 request. This is to prevent someone from deleting and then recreating
 their account in order to evade the ban.
 
+### GET account/insecure
+Requires admin authorization. Obtain the collection of insecure accounts.
+Insecure accounts are those defined as having a pbkdf2 iteration count or
+key-length less than the currently configured values.
+
+Because we do not store the user's password, we cannot update their account
+in case we decide to use longer keys or more iterations. This route
+allows an administrator to pull a list of those accounts that are "behind
+the security curve". Then perhaps send them an e-mail, asking them to
+please update their password and thus gain the higher security.
+
+Response is a JSON array of account resources that are considered insecure.
+
 ## Relation: ping
 Ping the service, to see if it is responding to requests.
 

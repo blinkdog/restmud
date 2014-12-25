@@ -20,6 +20,43 @@ should = require 'should'
 middle = require '../lib/middle'
 
 describe 'middle', ->
+  describe 'adminRequired', ->
+    adminRequired = middle.adminRequired()
+
+    it 'should send a 401 Unauthorized when req.auth does not exist', (done) ->
+      statusOk = false
+      req = {}
+      res =
+        send: (status, body) ->
+          statusOk = true if status is 401
+      next = (err) ->
+        return done() if statusOk and err is false
+        true.should.equal false
+      adminRequired req, res, next
+
+    it 'should send a 403 Forbidden when req.auth is not an admin', (done) ->
+      statusOk = false
+      req =
+        auth:
+          admin: false
+      res =
+        send: (status, body) ->
+          statusOk = true if status is 403
+      next = (err) ->
+        return done() if statusOk and err is false
+        true.should.equal false
+      adminRequired req, res, next
+
+    it 'should pass along when req.auth contains an admin', (done) ->
+      req =
+        auth:
+          admin: true
+      res = {}
+      next = (err) ->
+        return done() if not err?
+        true.should.equal false
+      adminRequired req, res, next
+
   describe 'authorizationRequired', ->
     authorizationRequired = middle.authorizationRequired()
 

@@ -330,7 +330,6 @@ describe '/account', ->
         saltBase64: "JI3XbdNVKDw="
         updateAttributes: (newFields, pickFields) ->
           for key in newFields
-            console.log "key:#{key} old:#{@[key]} new:#{newFields[key]}"
             @[key] = newFields[key]
           return this
         then: (cb) ->
@@ -384,7 +383,6 @@ describe '/account', ->
         saltBase64: "JI3XbdNVKDw="
         updateAttributes: (newFields, pickFields) ->
           for key in newFields
-            console.log "key:#{key} old:#{@[key]} new:#{newFields[key]}"
             @[key] = newFields[key]
           return this
         then: (cb) ->
@@ -533,6 +531,128 @@ describe '/account', ->
         .delete('/account/1')
         .set('Session', '06ade853-d8d3-466c-98e1-420a24020a73')
         .expect(409)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+  describe 'GET /account/insecure', ->
+    it 'should return 401 Unauthorized without req.auth', (done) ->
+      request(app)
+        .get('/account/insecure')
+        .expect(401)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+    it 'should return 403 Forbidden with the wrong req.auth', (done) ->
+      wrongAccount =
+        id: 3
+        username: "Luigi"
+        hashBase64: "h4D2ZBoHFBo="
+        iterations: 64
+        keyLength: 8
+        saltBase64: "iXlL9gfYUsI="
+        admin: false
+      wrongSession =
+        id: 16
+        uuid: "06ade853-d8d3-466c-98e1-420a24020a73"
+        expiresAt: "2014-12-20T20:58:16.615Z"
+        AccountId: 3
+        updatedAt: "2014-12-20T20:53:16.616Z"
+        createdAt: "2014-12-20T20:53:16.616Z"
+        getAccount: -> wrongAccount
+      app.models =
+        Session:
+          find: (where) ->
+            then: (cb) ->
+              cb?(wrongSession)
+              return this
+            catch: (cb) ->
+              return this
+      request(app)
+        .get('/account/insecure')
+        .set('Session', '06ade853-d8d3-466c-98e1-420a24020a73')
+        .expect(403)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+    it 'should return 200 OK with the right req.auth', (done) ->
+      rightAccount =
+        id: 1
+        username: "Mario"
+        hashBase64: "yGBOPbBX+J8="
+        iterations: 64
+        keyLength: 8
+        saltBase64: "JI3XbdNVKDw="
+        admin: true
+      rightSession =
+        id: 16
+        uuid: "06ade853-d8d3-466c-98e1-420a24020a73"
+        expiresAt: "2014-12-20T20:58:16.615Z"
+        AccountId: 1
+        updatedAt: "2014-12-20T20:53:16.616Z"
+        createdAt: "2014-12-20T20:53:16.616Z"
+        getAccount: -> rightAccount
+      app.models =
+        Account:
+          findAll: (where) ->
+            then: (cb) ->
+              cb?([{},{},{}])
+              return this
+            catch: (cb) ->
+              return this
+        Session:
+          find: (where) ->
+            then: (cb) ->
+              cb?(rightSession)
+              return this
+            catch: (cb) ->
+              return this
+      request(app)
+        .get('/account/insecure')
+        .set('Session', '06ade853-d8d3-466c-98e1-420a24020a73')
+        .expect(200)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+    it 'should return 500 if the database throws', (done) ->
+      rightAccount =
+        id: 1
+        username: "Mario"
+        hashBase64: "yGBOPbBX+J8="
+        iterations: 64
+        keyLength: 8
+        saltBase64: "JI3XbdNVKDw="
+        admin: true
+      rightSession =
+        id: 16
+        uuid: "06ade853-d8d3-466c-98e1-420a24020a73"
+        expiresAt: "2014-12-20T20:58:16.615Z"
+        AccountId: 1
+        updatedAt: "2014-12-20T20:53:16.616Z"
+        createdAt: "2014-12-20T20:53:16.616Z"
+        getAccount: -> rightAccount
+      app.models =
+        Account:
+          findAll: (where) ->
+            then: (cb) ->
+              return this
+            catch: (cb) ->
+              cb?("Ut oh...")
+              return this
+        Session:
+          find: (where) ->
+            then: (cb) ->
+              cb?(rightSession)
+              return this
+            catch: (cb) ->
+              return this
+      request(app)
+        .get('/account/insecure')
+        .set('Session', '06ade853-d8d3-466c-98e1-420a24020a73')
+        .expect(500)
         .end (err, res) ->
           return done err if err
           done()

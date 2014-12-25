@@ -17,8 +17,11 @@
 
 _ = require 'underscore'
 restify = require 'restify'
+Sequelize = require 'sequelize'
 
 { baseUri, pbkdf2 } = require('../../config')
+
+middle = require '../middle'
 
 auth = require '../auth'
 dbMessage = require '../dbMessage'
@@ -73,6 +76,20 @@ exports.attach = (server) ->
           next()
       .catch (err) ->
         next new restify.ConflictError dbMessage.parse err
+
+  adminRequired = middle.adminRequired()
+  server.get "#{PATH}/insecure", adminRequired, (req, res, next) ->
+    findInsecure =
+      where: Sequelize.or(
+        { iterations: { lt: pbkdf2.iterations } },
+        { keyLength:  { lt: pbkdf2.keyLength } } )
+    {Account} = server.models
+    Account.findAll(findInsecure)
+    .then (insecureAccounts) ->
+      res.send 200, insecureAccounts
+      next()
+    .catch (err) ->
+      next new restify.InternalServerError dbMessage.parse err
 
   server.get "#{PATH}/:id", (req, res, next) ->
     ERROR_MESSAGE = "Authentication required to view account"

@@ -61,6 +61,10 @@ exports.SCHEMA =
     type: Sequelize.BOOLEAN
     allowNull: false
     defaultValue: false
+  admin:
+    type: Sequelize.BOOLEAN
+    allowNull: false
+    defaultValue: false
 
 #----------------------------------------------------------------------------
 # end of Account.coffee

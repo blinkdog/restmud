@@ -59,6 +59,7 @@ exports.attach = (server) ->
     {Session} = server.models
     findByExpired =
       where:
+        deletedAt: null
         expiresAt:
           lt: Sequelize.NOW            # expired sessions only
     Session.destroy(findByExpired)

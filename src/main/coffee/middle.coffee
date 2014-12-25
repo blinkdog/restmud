@@ -20,6 +20,16 @@ Sequelize = require 'sequelize'
 {verifySync} = require './auth'
 {UUIDV4} = require './validate'
 
+exports.adminRequired = ->
+  return (req, res, next) ->
+    if not req.auth?
+      res.send 401
+      return next false
+    if req.auth.admin isnt true
+      res.send 403
+      return next false
+    next()
+
 exports.authorizationRequired = ->
   return (req, res, next) ->
     if not req.authorization.basic?
