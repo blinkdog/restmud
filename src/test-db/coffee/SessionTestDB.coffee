@@ -82,5 +82,23 @@ describe 'Sequelize: Session', ->
     .catch (err) ->
       done err
 
+  it 'should delete expired sessions', (done) ->
+    Session.create
+      expiresAt: Date.now() - 300000
+    .then (session) ->
+      session.expiresAt.should.be.ok
+      findByExpired =
+        where:
+          expiresAt:
+            lt: Sequelize.NOW
+      Session.destroy(findByExpired)
+      .then (numRows) ->
+        numRows.should.equal 1
+        return done()
+      .catch (err2) ->
+        done err2
+    .catch (err) ->
+      done err
+
 #----------------------------------------------------------------------------
 # end of SessionTestDB.coffee

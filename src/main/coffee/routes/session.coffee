@@ -15,10 +15,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #----------------------------------------------------------------------------
 
-config = require '../../config'
+_ = require 'underscore'
+Sequelize = require 'sequelize'
+
+{ baseUri, sessionLength } = require '../../config'
+
 middle = require '../middle'
 
 exports.PATH = PATH = '/session'
+
+acctPATH = require('./account').PATH
+
+displaySession = (session) ->
+  sess = _.pick session, [ 'id', 'uuid', 'expiresAt' ]
+  sess.links = [
+    { rel:'self',    href:"#{baseUri}#{PATH}/#{session.id}" },
+    { rel:'account', href:"#{baseUri}#{acctPATH}/#{session.AccountId}" } ]
+  return sess
 
 exports.attach = (server) ->
   authorizationRequired = middle.authorizationRequired()
@@ -29,10 +42,28 @@ exports.attach = (server) ->
       return next()
     {Session} = server.models
     Session.create
-      expiresAt: Date.now() + config.sessionLength
+      expiresAt: Date.now() + sessionLength
       AccountId: req.auth.id
     .then (session) ->
-      res.send 201, session
+      res.send 201, displaySession session
+      next()
+    .catch (err) ->
+      next new restify.InternalServerError err
+
+  server.del PATH, (req, res, next) ->
+    ###
+      Note: We really don't care about authentication here. If an
+      anonymous user asks the server to delete expired sessions,
+      it's not really a big deal.
+    ###
+    {Session} = server.models
+    findByExpired =
+      where:
+        expiresAt:
+          lt: Sequelize.NOW            # expired sessions only
+    Session.destroy(findByExpired)
+    .then ->
+      res.send 200
       next()
     .catch (err) ->
       next new restify.InternalServerError err

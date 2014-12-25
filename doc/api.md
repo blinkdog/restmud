@@ -132,19 +132,7 @@ If the provided credentials are valid, the response body will be a
 session resource. Right now, that usually looks like this:
 
     {
-      "uuid":"06ade853-d8d3-466c-98e1-420a24020a73",
-      "id":"16",
-      "expiresAt":"2014-12-20T20:58:16.615Z",
-      "AccountId":1,
-      "updatedAt":"2014-12-20T20:53:16.616Z",
-      "createdAt":"2014-12-20T20:53:16.616Z"
-    }
-
-In the future, I'd like to clean-up that output object to look a little
-nicer and provide RESTful links:
-
-    {
-      "id": 42,
+      "id": 16,
       "uuid": "06ade853-d8d3-466c-98e1-420a24020a73",
       "expiresAt": "2014-12-20T20:58:16.615Z",
       "links": [
@@ -162,6 +150,11 @@ nicer and provide RESTful links:
 The important field is `uuid`, as it will need to be provided in a
 `Session` header, in order to mark the request as belonging to an
 authenticated session.
+
+### DELETE session
+Remove expired sessions from the database. Oddly, this route is not
+authenticated. Expired session resources are no longer useful, and
+this method is simply taking out the trash.
 
 ## Relation: source
 The URI used to provide the Corresponding Source as required by Section 13

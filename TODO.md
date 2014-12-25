@@ -1,13 +1,9 @@
 # TODO
-[X] Add RESTful links to account on GET /account/:id
-[X] Add more fields to Account model: e-mail address, banned, etc.
-[X] Create forbidBanned middleware to 403 all requests from banned accounts
-[X] Create crUd of account relation
-[X] Create cruD of account relation
-[ ] Add new GET /account/insecure route for accounts that need password change
-[ ] Clean up the session object provided in the POST /session response
-[ ] Allow deleting expired sessions via DELETE /session
+[X] Clean up the session object provided in the POST /session response
+[X] Allow deleting expired sessions via DELETE /session
 [ ] Create restmud-robot to drive some requests (i.e.: regular DELETE /session)
+[ ] Add admin field to Account model
+[ ] Add new GET /account/insecure route for accounts that need password change
 [ ] Create restmud-telnet bridge to allow telnet logins
 [ ] Create status relation and return JSON ~= Mud Server Status Protocol (MSSP)
 [ ] Update restmud-telnet bridge to provide MSSP

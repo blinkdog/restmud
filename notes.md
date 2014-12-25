@@ -7,7 +7,7 @@ Here's an example of creating an account using curl:
     curl -i -H "Content-Type: application/json" \
     -X POST \
     -d '{"username": "Mario", "password": "ilovepeach"}' \
-    http://localhost:8080/accounts && echo ""
+    http://localhost:8080/account && echo ""
 
 Here's an example of creating a session using curl:
 

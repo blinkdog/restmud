@@ -163,10 +163,34 @@ describe '/session', ->
           done()
 
   describe 'DELETE /session', ->
-    it 'should return 405', (done) ->
+    it 'should return 200 OK when deleting expired sessions', (done) ->
+      app.models =
+        Session:
+          destroy: (json) ->
+            then: (cb) ->
+              cb?()
+              return this
+            catch: (cb) ->
+              return this
       request(app)
         .delete('/session')
-        .expect(405)
+        .expect(200)
+        .end (err, res) ->
+          return done err if err
+          done()
+
+    it 'should return 500 if the database throws during DELETE', (done) ->
+      app.models =
+        Session:
+          destroy: (json) ->
+            then: (cb) ->
+              return this
+            catch: (cb) ->
+              cb?()
+              return this
+      request(app)
+        .delete('/session')
+        .expect(500)
         .end (err, res) ->
           return done err if err
           done()
