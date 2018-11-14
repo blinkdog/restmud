@@ -22,7 +22,7 @@ restmud = require '../../lib/restmud'
 
 app = restmud.create()
 
-describe '/ping', ->
+xdescribe '/ping', ->
   describe 'HEAD /ping', ->
     it 'should return 200', (done) ->
       request(app)
@@ -31,7 +31,7 @@ describe '/ping', ->
         .end (err, res) ->
           return done err if err
           done()
-          
+
   describe 'GET /ping', ->
     it 'should return 405', (done) ->
       request(app)

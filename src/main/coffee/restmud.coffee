@@ -21,10 +21,10 @@ middle = require './middle'
 
 exports.create = (options) ->
   app = restify.createServer()
-  
-  app.pre restify.pre.userAgentConnection()   # clean up curl requests
-  app.use restify.authorizationParser()       # parse an Authorization header
-  app.use restify.bodyParser()                # parse JSON into req.body
+
+  app.pre restify.plugins.pre.userAgentConnection()   # clean up curl requests
+  app.use restify.plugins.authorizationParser()       # parse an Authorization header
+  app.use restify.plugins.bodyParser()                # parse JSON into req.body
 
   app.use middle.requestAuth app              # load req.auth when valid creds
   app.use middle.sessionAuth app              # load req.auth when valid Session

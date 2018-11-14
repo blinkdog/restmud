@@ -19,7 +19,7 @@ should = require 'should'
 
 model = require '../../lib/models/Account'
 
-describe 'Model: Account', ->
+xdescribe 'Model: Account', ->
   it 'should be named Account', ->
     model.NAME.should.equal 'Account'
   it 'should have a defined schema', ->

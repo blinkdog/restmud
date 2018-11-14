@@ -24,14 +24,14 @@ validate = require '../lib/validate'
 SIZE_RANDOM_TEST = 256
 NUM_RANDOM_TESTS = 64
 
-describe 'validate', ->
+xdescribe 'validate', ->
   describe 'BASE64', ->
     it 'should be a regular expression', ->
       validate.should.have.property 'BASE64'
       validate.BASE64.should.be.ok
       validate.BASE64.constructor.name.should.equal 'RegExp'
       should(validate.BASE64 instanceof RegExp).equal true
-      
+
     it 'should validate legitimate base64 strings', (done) ->
       maybeDone = _.after NUM_RANDOM_TESTS, done
       for i in [1..NUM_RANDOM_TESTS]

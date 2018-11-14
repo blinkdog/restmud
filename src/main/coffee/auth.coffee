@@ -18,13 +18,14 @@
 crypto = require 'crypto'
 
 exports.generate = (options, callback) ->
-  { iterations, keyLength, password, saltLength } = options
-  try 
+  { iterations, keyLength, password, saltLength, digest } = options
+  try
     saltBuffer = crypto.pseudoRandomBytes saltLength
     # https://github.com/joyent/node/issues/8915
-    try 
-      key = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength
+    try
+      key = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength, digest
       callback null,
+        digest: digest
         hashBase64: key.toString 'base64'
         iterations: iterations
         keyLength: keyLength
@@ -35,19 +36,20 @@ exports.generate = (options, callback) ->
     callback err
 
 exports.generateSync = (options) ->
-  { iterations, keyLength, password, saltLength } = options
+  { iterations, keyLength, password, saltLength, digest } = options
   saltBuffer = crypto.pseudoRandomBytes saltLength
   key = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength
   return credentials =
+    digest: digest
     hashBase64: key.toString 'base64'
     iterations: iterations
     keyLength: keyLength
     saltBase64: saltBuffer.toString 'base64'
 
 exports.verifySync = (options) ->
-  { hashBase64, iterations, keyLength, password, saltBase64 } = options
+  { hashBase64, iterations, keyLength, password, saltBase64, digest } = options
   saltBuffer = new Buffer saltBase64, 'base64'
-  hashBuffer = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength
+  hashBuffer = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength, digest
   hashBase64 is hashBuffer.toString 'base64'
 
 #----------------------------------------------------------------------------

@@ -26,7 +26,7 @@ basicAuth = (username, password) ->
 
 app = restmud.create()
 
-describe '/session', ->
+xdescribe '/session', ->
   describe 'HEAD /session', ->
     it 'should return 405', (done) ->
       request(app)

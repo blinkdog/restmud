@@ -23,7 +23,7 @@ restmud = require '../../lib/restmud'
 
 app = restmud.create()
 
-describe '/ (HATEOAS)', ->
+xdescribe '/ (HATEOAS)', ->
   describe 'HEAD /', ->
     it 'should return 200', (done) ->
       request(app)
@@ -41,7 +41,7 @@ describe '/ (HATEOAS)', ->
         .end (err, res) ->
           return done err if err
           done()
-          
+
     it 'should return JSON', (done) ->
       request(app)
         .get('/')
@@ -64,12 +64,12 @@ describe '/ (HATEOAS)', ->
           res.body.links.should.be.an.Array
           res.body.links.should.not.be.empty
           res.body.links.should.matchEach (link) ->
-            link.should.match 
+            link.should.match
               rel:  (it) -> it.should.be.ok
               href: (it) -> it.should.be.ok
           return done err if err
           done()
-          
+
     describe 'HATEOAS links', ->
       hasLinkType = (links, type) ->
         link = _.findWhere links, { rel: type }

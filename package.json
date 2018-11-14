@@ -22,16 +22,16 @@
         "url": "https://github.com/blinkdog/restmud.git"
     },
     "dependencies": {
-        "pg": "4.1.1",
-        "restify": "2.8.4",
-        "sequelize": "2.0.0-rc4",
-        "underscore": "1.7.0"
+        "pg": "7.6.1",
+        "restify": "7.2.2",
+        "sequelize": "4.41.2",
+        "underscore": "1.9.1"
     },
     "devDependencies": {
-        "coffee-script": "1.8.0",
-        "istanbul": "0.3.5",
-        "mocha": "2.1.0",
-        "should": "4.4.1",
-        "supertest": "0.15.0"
+        "coffeescript": "2.3.2",
+        "istanbul": "0.4.5",
+        "mocha": "5.2.0",
+        "should": "13.2.3",
+        "supertest": "3.3.0"
     }
 }

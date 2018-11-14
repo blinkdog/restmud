@@ -24,7 +24,7 @@ restmud = require '../../lib/restmud'
 
 app = restmud.create()
 
-describe '/account', ->
+xdescribe '/account', ->
   describe 'GET /account', ->
     it 'should return 401 Unauthorized', (done) ->
       request(app)

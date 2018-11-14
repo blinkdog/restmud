@@ -19,7 +19,7 @@ should = require 'should'
 
 model = require '../../lib/models/Session'
 
-describe 'Model: Session', ->
+xdescribe 'Model: Session', ->
   it 'should be named Session', ->
     model.NAME.should.equal 'Session'
   it 'should have a defined schema', ->

@@ -20,7 +20,7 @@ should = require 'should'
 
 models = require '../../lib/models/models'
 
-describe 'Models', ->
+xdescribe 'Models', ->
   nameList = []
 
   sequelize =
