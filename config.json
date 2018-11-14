@@ -11,6 +11,7 @@
         "username": "restmud"
     },
     "pbkdf2": {
+        "digest": "sha512",
         "iterations": 64,
         "keyLength": 8,
         "saltLength": 8

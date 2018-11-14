@@ -17,8 +17,29 @@
 
 should = require 'should'
 request = require 'supertest'
+proxyquire = require("proxyquire").noCallThru()
 
-restmud = require '../../lib/restmud'
+sessionRoutes = proxyquire '../../lib/routes/session',
+  "underscore": require "underscore"
+  "sequelize":
+    NOW: "NOW"
+  "../../config":
+    baseUri: "http://not.really.a.uri"
+    sessionLength: 9001 # over 9000!!!
+  "../middle": require "../../lib/middle"
+  "./account":
+    PATH: "/account"
+
+restmud = proxyquire '../../lib/restmud',
+  "restify": require "restify"
+  "./middle": require "../../lib/middle"
+  "./routes/account":
+    attach: ->
+  "./routes/hateoas":
+    attach: ->
+  "./routes/ping":
+    attach: ->
+  "./routes/session": sessionRoutes
 
 basicAuth = (username, password) ->
   base64 = new Buffer("#{username}:#{password}").toString 'base64'
@@ -26,7 +47,10 @@ basicAuth = (username, password) ->
 
 app = restmud.create()
 
-xdescribe '/session', ->
+describe '/session', ->
+  beforeEach ->
+    delete app.models
+
   describe 'HEAD /session', ->
     it 'should return 405', (done) ->
       request(app)
@@ -35,6 +59,7 @@ xdescribe '/session', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'GET /session', ->
     it 'should return 405', (done) ->
@@ -44,6 +69,7 @@ xdescribe '/session', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'POST /session', ->
     it 'should return 401 if no Authorization header is provided', (done) ->
@@ -53,11 +79,13 @@ xdescribe '/session', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 401 if bad credentials are provided', (done) ->
       mario =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -78,12 +106,14 @@ xdescribe '/session', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 201 if good credentials are provided', (done) ->
       mario =
         id: 1
         username: "Mario"
-        hashBase64: "yGBOPbBX+J8="
+        digest: "sha512"
+        hashBase64: "UFdcS+lle6w="
         iterations: 64
         keyLength: 8
         saltBase64: "JI3XbdNVKDw="
@@ -115,12 +145,14 @@ xdescribe '/session', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 500 if the database throws during Session creation', (done) ->
       mario =
         id: 1
         username: "Mario"
-        hashBase64: "yGBOPbBX+J8="
+        digest: "sha512"
+        hashBase64: "UFdcS+lle6w="
         iterations: 64
         keyLength: 8
         saltBase64: "JI3XbdNVKDw="
@@ -152,6 +184,7 @@ xdescribe '/session', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'PUT /session', ->
     it 'should return 405', (done) ->
@@ -161,39 +194,44 @@ xdescribe '/session', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'DELETE /session', ->
     it 'should return 200 OK when deleting expired sessions', (done) ->
       app.models =
         Session:
           destroy: (json) ->
-            then: (cb) ->
-              cb?()
-              return this
-            catch: (cb) ->
-              return this
+            return this
+          then: (cb) ->
+            cb?()
+            return this
+          catch: (cb) ->
+            return this
       request(app)
         .delete('/session')
         .expect(200)
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 500 if the database throws during DELETE', (done) ->
       app.models =
         Session:
           destroy: (json) ->
-            then: (cb) ->
-              return this
-            catch: (cb) ->
-              cb?()
-              return this
+            return this
+          then: (cb) ->
+            return this
+          catch: (cb) ->
+            cb?("Exterminate!")
+            return this
       request(app)
         .delete('/session')
         .expect(500)
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
 #----------------------------------------------------------------------------
 # end of sessionTest.coffee

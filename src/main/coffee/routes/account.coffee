@@ -60,6 +60,7 @@ exports.attach = (server) ->
     accountData = _.pick req.body, ['username', 'password']
     {Account} = server.models
     options =
+      digest: pbkdf2.digest
       iterations: pbkdf2.iterations
       keyLength: pbkdf2.keyLength
       password: accountData.password
@@ -112,6 +113,7 @@ exports.attach = (server) ->
     # if the user updated their password
     if newAcct.password?
       _.defaults newAcct, auth.generateSync
+        digest: pbkdf2.digest
         iterations: pbkdf2.iterations
         keyLength: pbkdf2.keyLength
         password: newAcct.password

@@ -16,6 +16,7 @@
 #----------------------------------------------------------------------------
 
 _ = require 'underscore'
+{InternalServerError} = require 'restify-errors'
 Sequelize = require 'sequelize'
 
 { baseUri, sessionLength } = require '../../config'
@@ -48,7 +49,7 @@ exports.attach = (server) ->
       res.send 201, displaySession session
       next()
     .catch (err) ->
-      next new restify.InternalServerError err
+      next new InternalServerError err
 
   server.del PATH, (req, res, next) ->
     ###
@@ -67,7 +68,7 @@ exports.attach = (server) ->
       res.send 200
       next()
     .catch (err) ->
-      next new restify.InternalServerError err
+      next new InternalServerError err
 
   return server
 

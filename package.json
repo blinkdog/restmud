@@ -1,6 +1,6 @@
 {
     "name": "restmud",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "A MUD engine with a RESTful core",
     "keywords": [
         "coffeescript",
@@ -31,6 +31,7 @@
         "coffeescript": "2.3.2",
         "istanbul": "0.4.5",
         "mocha": "5.2.0",
+        "proxyquire": "2.1.0",
         "should": "13.2.3",
         "supertest": "3.3.0"
     }
