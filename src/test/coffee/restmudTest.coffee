@@ -21,7 +21,7 @@ restmud = require '../lib/restmud'
 
 app = restmud.create()
 
-xdescribe 'restmud', ->
+describe 'restmud', ->
   it 'should not have an ORM or models', ->
     app.should.not.have.properties ['models', 'orm']
 

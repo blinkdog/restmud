@@ -23,7 +23,7 @@ restmud = require '../../lib/restmud'
 
 app = restmud.create()
 
-xdescribe '/ (HATEOAS)', ->
+describe '/ (HATEOAS)', ->
   describe 'HEAD /', ->
     it 'should return 200', (done) ->
       request(app)
@@ -32,6 +32,7 @@ xdescribe '/ (HATEOAS)', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'GET /', ->
     it 'should return 200', (done) ->
@@ -41,6 +42,7 @@ xdescribe '/ (HATEOAS)', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return JSON', (done) ->
       request(app)
@@ -51,6 +53,7 @@ xdescribe '/ (HATEOAS)', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return HATEOAS links', (done) ->
       request(app)
@@ -69,6 +72,7 @@ xdescribe '/ (HATEOAS)', ->
               href: (it) -> it.should.be.ok
           return done err if err
           done()
+      return false
 
     describe 'HATEOAS links', ->
       hasLinkType = (links, type) ->
@@ -85,6 +89,7 @@ xdescribe '/ (HATEOAS)', ->
             hasLinkType res.body.links, 'account'
             return done err if err
             done()
+        return false
 
       it 'should provide a ping link relation', (done) ->
         request(app)
@@ -96,6 +101,7 @@ xdescribe '/ (HATEOAS)', ->
             hasLinkType res.body.links, 'ping'
             return done err if err
             done()
+        return false
 
       it 'should provide a self link relation', (done) ->
         request(app)
@@ -107,6 +113,7 @@ xdescribe '/ (HATEOAS)', ->
             hasLinkType res.body.links, 'self'
             return done err if err
             done()
+        return false
 
       it 'should provide a session link relation', (done) ->
         request(app)
@@ -118,6 +125,7 @@ xdescribe '/ (HATEOAS)', ->
             hasLinkType res.body.links, 'session'
             return done err if err
             done()
+        return false
 
       it 'should provide a source link relation', (done) ->
         request(app)
@@ -129,6 +137,7 @@ xdescribe '/ (HATEOAS)', ->
             hasLinkType res.body.links, 'source'
             return done err if err
             done()
+        return false
 
 #----------------------------------------------------------------------------
 # end of hateoasTest.coffee
