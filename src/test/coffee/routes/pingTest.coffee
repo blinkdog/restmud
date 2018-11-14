@@ -22,7 +22,7 @@ restmud = require '../../lib/restmud'
 
 app = restmud.create()
 
-xdescribe '/ping', ->
+describe '/ping', ->
   describe 'HEAD /ping', ->
     it 'should return 200', (done) ->
       request(app)
@@ -31,6 +31,7 @@ xdescribe '/ping', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'GET /ping', ->
     it 'should return 405', (done) ->
@@ -40,6 +41,7 @@ xdescribe '/ping', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'POST /ping', ->
     it 'should return 405', (done) ->
@@ -49,6 +51,7 @@ xdescribe '/ping', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'PUT /ping', ->
     it 'should return 405', (done) ->
@@ -58,6 +61,7 @@ xdescribe '/ping', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'DELETE /ping', ->
     it 'should return 405', (done) ->
@@ -67,6 +71,7 @@ xdescribe '/ping', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
 #----------------------------------------------------------------------------
 # end of pingTest.coffee
