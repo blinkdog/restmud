@@ -21,7 +21,7 @@ Sequelize = require 'sequelize'
 
 exports.NAME = 'Account'
 
-exports.SCHEMA = 
+exports.SCHEMA =
   id:
     type: Sequelize.INTEGER
     autoIncrement: true
@@ -32,6 +32,12 @@ exports.SCHEMA =
     unique: true
     validate:
       is: /^[a-z]+$/i
+      len: [3,16]
+  digest:
+    type: Sequelize.STRING
+    allowNull: false
+    validate:
+      is: /^[a-z0-9]+$/i
       len: [3,16]
   hashBase64:
     type: Sequelize.STRING

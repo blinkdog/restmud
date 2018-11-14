@@ -19,7 +19,7 @@ should = require 'should'
 
 middle = require '../lib/middle'
 
-xdescribe 'middle', ->
+describe 'middle', ->
   describe 'adminRequired', ->
     adminRequired = middle.adminRequired()
 
@@ -123,6 +123,7 @@ xdescribe 'middle', ->
       mario =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -176,7 +177,8 @@ xdescribe 'middle', ->
       mario =
         id: 1
         username: "Mario"
-        hashBase64: "yGBOPbBX+J8="
+        digest: "sha512"
+        hashBase64: "UFdcS+lle6w="
         iterations: 64
         keyLength: 8
         saltBase64: "JI3XbdNVKDw="
@@ -272,6 +274,7 @@ xdescribe 'middle', ->
       mario =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -320,6 +323,7 @@ xdescribe 'middle', ->
         auth:
           id: 1
           username: "Mario"
+          digest: "sha512"
           hashBase64: "yGBOPbBX+J8="
           iterations: 64
           keyLength: 8
@@ -338,6 +342,7 @@ xdescribe 'middle', ->
         auth:
           id: 616
           username: "Bowser"
+          digest: "sha512"
           hashBase64: "RiPubxaMp/w="
           iterations: 64
           keyLength: 8

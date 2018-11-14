@@ -48,6 +48,7 @@ exports.requestAuth = (app) ->
     .then (account) ->
       return next() if not account?
       verifyCred =
+        digest: account.digest
         hashBase64: account.hashBase64
         iterations: account.iterations
         keyLength: account.keyLength

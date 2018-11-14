@@ -38,7 +38,7 @@ exports.generate = (options, callback) ->
 exports.generateSync = (options) ->
   { iterations, keyLength, password, saltLength, digest } = options
   saltBuffer = crypto.pseudoRandomBytes saltLength
-  key = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength
+  key = crypto.pbkdf2Sync password, saltBuffer, iterations, keyLength, digest
   return credentials =
     digest: digest
     hashBase64: key.toString 'base64'

@@ -19,7 +19,7 @@ should = require 'should'
 
 dbMessage = require '../lib/dbMessage'
 
-xdescribe 'Database Message', ->
+describe 'Database Message', ->
   it 'should describe duplicate usernames', ->
     result = dbMessage.parse
       name: 'SequelizeUniqueConstraintError'
