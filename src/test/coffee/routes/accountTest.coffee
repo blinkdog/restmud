@@ -18,13 +18,44 @@
 _ = require 'underscore'
 should = require 'should'
 request = require 'supertest'
+proxyquire = require("proxyquire").noCallThru()
 
-restmud = require '../../lib/restmud'
+middle = proxyquire "../../lib/middle",
+  "sequelize":
+    "NOW": "NOW"
+
+accountRoutes = proxyquire '../../lib/routes/account',
+  "underscore": require "underscore"
+  "restify": require "restify"
+  "sequelize":
+    or: ->
+  "../../config":
+    "baseUri": "http://localhost:8080"
+    "pbkdf2":
+      "digest": "sha512"
+      "iterations": 64
+      "keyLength": 8
+      "saltLength": 8
+  "../middle": middle
+  "../auth": require "../../lib/auth"
+  "../dbMessage": require "../../lib/dbMessage"
+
+restmud = proxyquire '../../lib/restmud',
+  "restify": require "restify"
+  "./middle": require "../../lib/middle"
+  "./routes/account": accountRoutes
+  "./routes/hateoas":
+    attach: ->
+  "./routes/ping":
+    attach: ->
+  "./routes/session":
+    attach: ->
+
 {BASE64} = require '../../lib/validate'
 
 app = restmud.create()
 
-xdescribe '/account', ->
+describe '/account', ->
   describe 'GET /account', ->
     it 'should return 401 Unauthorized', (done) ->
       request(app)
@@ -33,6 +64,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'POST /account', ->
     it 'should return 400 Bad Request if no body is present', (done) ->
@@ -42,6 +74,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 400 Bad Request if the body is not valid JSON', (done) ->
       request(app)
@@ -51,6 +84,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 409 Conflict if the username is missing', (done) ->
       request(app)
@@ -60,6 +94,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 409 Conflict if the password is missing', (done) ->
       request(app)
@@ -69,6 +104,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 409 Conflict if the username is too short', (done) ->
       request(app)
@@ -78,6 +114,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 409 Conflict if the username is too long', (done) ->
       request(app)
@@ -87,6 +124,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 409 Conflict if the username contains non-alpha', (done) ->
       request(app)
@@ -96,6 +134,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 201 Created after success', (done) ->
       mario =
@@ -120,6 +159,7 @@ xdescribe '/account', ->
           res.body.should.have.properties ['rel', 'href']
           res.body.rel.should.equal 'account'
           done()
+      return false
 
     it 'should return 409 Conflict on a database error', (done) ->
       dbErrorJson = '''
@@ -160,6 +200,7 @@ xdescribe '/account', ->
           res.should.have.property 'text'
           res.text.should.be.ok
           done()
+      return false
 
   describe 'GET /account/:id', ->
     it 'should return 401 Unauthorized without req.auth', (done) ->
@@ -169,11 +210,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 403 Forbidden with the wrong req.auth', (done) ->
       wrongAccount =
         id: 3
         username: "Luigi"
+        digest: "sha512"
         hashBase64: "h4D2ZBoHFBo="
         iterations: 64
         keyLength: 8
@@ -201,11 +244,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 200 OK with the right req.auth', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -233,6 +278,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'PUT /account/:id', ->
     it 'should return 401 Unauthorized without req.auth', (done) ->
@@ -242,11 +288,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 403 Forbidden with the wrong req.auth', (done) ->
       wrongAccount =
         id: 3
         username: "Luigi"
+        digest: "sha512"
         hashBase64: "h4D2ZBoHFBo="
         iterations: 64
         keyLength: 8
@@ -274,11 +322,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 200 OK if updatable fields are specified', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -319,11 +369,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 200 OK and ignore non-updatable fields', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -359,6 +411,7 @@ xdescribe '/account', ->
         .send({
           id: 42,
           username: 'Sonic',
+          digest: "sha512"
           hashBase64: 'Jnh/xKbSs9k=',
           iterations: 128,
           keyLength: 16,
@@ -372,11 +425,13 @@ xdescribe '/account', ->
           res.body.id.should.equal 1
           res.body.username.should.equal 'Mario'
           done()
+      return false
 
     it 'should return 409 Conflict on a database error', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -416,6 +471,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'DELETE /account/:id', ->
     it 'should return 401 Unauthorized without req.auth', (done) ->
@@ -425,11 +481,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 403 Forbidden with the wrong req.auth', (done) ->
       wrongAccount =
         id: 3
         username: "Luigi"
+        digest: "sha512"
         hashBase64: "h4D2ZBoHFBo="
         iterations: 64
         keyLength: 8
@@ -457,11 +515,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 200 OK if deleted', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -495,11 +555,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 409 Conflict on a database error', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -534,6 +596,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
   describe 'GET /account/insecure', ->
     it 'should return 401 Unauthorized without req.auth', (done) ->
@@ -543,11 +606,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 403 Forbidden with the wrong req.auth', (done) ->
       wrongAccount =
         id: 3
         username: "Luigi"
+        digest: "sha512"
         hashBase64: "h4D2ZBoHFBo="
         iterations: 64
         keyLength: 8
@@ -576,11 +641,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 200 OK with the right req.auth', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -616,11 +683,13 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
     it 'should return 500 if the database throws', (done) ->
       rightAccount =
         id: 1
         username: "Mario"
+        digest: "sha512"
         hashBase64: "yGBOPbBX+J8="
         iterations: 64
         keyLength: 8
@@ -656,6 +725,7 @@ xdescribe '/account', ->
         .end (err, res) ->
           return done err if err
           done()
+      return false
 
 #----------------------------------------------------------------------------
 # end of accountTest.coffee

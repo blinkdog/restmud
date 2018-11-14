@@ -16,7 +16,15 @@
 #----------------------------------------------------------------------------
 
 _ = require 'underscore'
-restify = require 'restify'
+{
+  BadRequestError,
+  ConflictError,
+  ForbiddenError,
+  InternalServerError,
+  InvalidArgumentError,
+  MissingParameterError,
+  UnauthorizedError
+} = require "restify-errors"
 Sequelize = require 'sequelize'
 
 { baseUri, pbkdf2 } = require('../../config')
@@ -37,25 +45,25 @@ displayAccount = (account) ->
 exports.attach = (server) ->
 
   server.get PATH, (req, res, next) ->
-    next new restify.UnauthorizedError "Authentication required to list accounts"
+    next new UnauthorizedError "Authentication required to list accounts"
 
   server.post PATH, (req, res, next) ->
     # handle all the bad cases
     if not req.body?
-      return next new restify.BadRequestError "body required"
+      return next new BadRequestError "body required"
     if not req.is 'json'
-      return next new restify.BadRequestError "valid JSON required"
+      return next new BadRequestError "valid JSON required"
     if not req.body.username?
-      return next new restify.MissingParameterError "username required"
+      return next new MissingParameterError "username required"
     if not req.body.password?
-      return next new restify.MissingParameterError "password required"
+      return next new MissingParameterError "password required"
     {username, password} = req.body
     if username.length < 3
-      return next new restify.InvalidArgumentError "username too short"
+      return next new InvalidArgumentError "username too short"
     if username.length > 16
-      return next new restify.InvalidArgumentError "username too long"
+      return next new InvalidArgumentError "username too long"
     if not /^[a-z]+$/i.test username
-      return next new restify.InvalidArgumentError "username contains non-alpha"
+      return next new InvalidArgumentError "username contains non-alpha"
     # prepare the account data for creation
     accountData = _.pick req.body, ['username', 'password']
     {Account} = server.models
@@ -66,7 +74,7 @@ exports.attach = (server) ->
       password: accountData.password
       saltLength: pbkdf2.saltLength
     auth.generate options, (err, cred) ->
-      return next new restify.InternalServerError err if err?
+      return next new InternalServerError err if err?
       # attempt to create the account
       _.defaults accountData, cred
       Account.create(accountData)
@@ -76,7 +84,7 @@ exports.attach = (server) ->
             href: "#{baseUri}#{PATH}/#{account.id}"
           next()
       .catch (err) ->
-        next new restify.ConflictError dbMessage.parse err
+        next new ConflictError dbMessage.parse err
 
   adminRequired = middle.adminRequired()
   server.get "#{PATH}/insecure", adminRequired, (req, res, next) ->
@@ -90,14 +98,14 @@ exports.attach = (server) ->
       res.send 200, insecureAccounts
       next()
     .catch (err) ->
-      next new restify.InternalServerError dbMessage.parse err
+      next new InternalServerError dbMessage.parse err
 
   server.get "#{PATH}/:id", (req, res, next) ->
     ERROR_MESSAGE = "Authentication required to view account"
     if not req.auth?
-      return next new restify.UnauthorizedError ERROR_MESSAGE
+      return next new UnauthorizedError ERROR_MESSAGE
     if req.auth.id isnt parseInt req.params.id
-      return next new restify.ForbiddenError ERROR_MESSAGE
+      return next new ForbiddenError ERROR_MESSAGE
     res.send 200, displayAccount req.auth
     next()
 
@@ -105,9 +113,9 @@ exports.attach = (server) ->
     # check authentication
     ERROR_MESSAGE = "Authentication required to update account"
     if not req.auth?
-      return next new restify.UnauthorizedError ERROR_MESSAGE
+      return next new UnauthorizedError ERROR_MESSAGE
     if req.auth.id isnt parseInt req.params.id
-      return next new restify.ForbiddenError ERROR_MESSAGE
+      return next new ForbiddenError ERROR_MESSAGE
     # determine what fields need to be updated
     newAcct = _.pick req.body, [ 'email', 'password' ]
     # if the user updated their password
@@ -124,22 +132,22 @@ exports.attach = (server) ->
       res.send 200, displayAccount req.auth
       next()
     .catch (err) ->
-      next new restify.ConflictError dbMessage.parse err
+      next new ConflictError dbMessage.parse err
 
   server.del "#{PATH}/:id", (req, res, next) ->
     # check authentication
     ERROR_MESSAGE = "Authentication required to delete account"
     if not req.auth?
-      return next new restify.UnauthorizedError ERROR_MESSAGE
+      return next new UnauthorizedError ERROR_MESSAGE
     if req.auth.id isnt parseInt req.params.id
-      return next new restify.ForbiddenError ERROR_MESSAGE
+      return next new ForbiddenError ERROR_MESSAGE
     # delete the account
     req.auth.destroy()
     .then ->
       res.send 200
       next()
     .catch (err) ->
-      next new restify.ConflictError dbMessage.parse err
+      next new ConflictError dbMessage.parse err
 
   return server
 
