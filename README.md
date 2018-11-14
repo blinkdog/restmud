@@ -1,6 +1,14 @@
 # restmud
 A MUD engine with a RESTful core
 
+## Note
+This project is mostly idle. I have updated it because GitHub pointed
+out that one of the dependencies had a security vulnerability. I very
+much doubt that anybody is using this code. Just in case you stumble
+across it and decide to make your mistakes in the same pattern that
+I was making my mistakes in 2014, I leave you with a more modern
+abandoned codebase.
+
 ## Dependencies
 * [Node.js](http://nodejs.org/)
 
@@ -14,7 +22,7 @@ Want to hack on restmud?
     cake rebuild
 
 ## License
-restmud<br/> 
+restmud  
 Copyright 2014 Patrick Meade
 
 This program is free software: you can redistribute it and/or modify
