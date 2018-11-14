@@ -24,7 +24,7 @@ validate = require '../lib/validate'
 SIZE_RANDOM_TEST = 256
 NUM_RANDOM_TESTS = 64
 
-xdescribe 'validate', ->
+describe 'validate', ->
   describe 'BASE64', ->
     it 'should be a regular expression', ->
       validate.should.have.property 'BASE64'
